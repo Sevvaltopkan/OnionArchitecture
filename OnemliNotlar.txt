@@ -1,8 +1,0 @@
-Layered Architectures
-N-Tier, Onion,Hexagonal, VSA(Vertical Slice Architecture), Hybrid Architectures
-
-
-
-
-Modular Architectures
-MVC,MVVM

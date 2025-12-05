@@ -1,16 +1,12 @@
 ﻿using MediatR;
+using OnionVb02.Application.CqrsAndMediatr.Common;
 using OnionVb02.Application.CqrsAndMediatr.Mediator.Commands.AppUserCommands;
 using OnionVb02.Contract.RepositoryInterfaces;
 using OnionVb02.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnionVb02.Application.CqrsAndMediatr.Mediator.Handlers.Modify
 {
-    public class RemoveAppUserCommandHandler : IRequestHandler<RemoveAppUserCommand>
+    public class RemoveAppUserCommandHandler : ICommandHandler<RemoveAppUserCommand>
     {
         private readonly IAppUserRepository _repository;
 
@@ -19,10 +15,22 @@ namespace OnionVb02.Application.CqrsAndMediatr.Mediator.Handlers.Modify
             _repository = repository;
         }
 
-        public async Task Handle(RemoveAppUserCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(RemoveAppUserCommand command, CancellationToken cancellationToken)
         {
-            AppUser value = await _repository.GetByIdAsync(request.Id);
-            await _repository.DeleteAsync(value);
+            try
+            {
+                AppUser value = await _repository.GetByIdAsync(command.Id);
+
+                if (value == null)
+                    return Result.Failure($"ID: {command.Id} bulunamadı");
+
+                await _repository.DeleteAsync(value);
+                return Result.Success("Kullanıcı başarıyla silindi");
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure("Kullanıcı silinirken hata oluştu", ex.Message);
+            }
         }
     }
 }

@@ -1,15 +1,13 @@
-﻿using OnionVb02.Application.CqrsAndMediatr.CQRS.Results.CategoryResults;
+﻿using MediatR;
+using OnionVb02.Application.CqrsAndMediatr.Common;
+using OnionVb02.Application.CqrsAndMediatr.CQRS.Queries.CategoryQueries;
+using OnionVb02.Application.CqrsAndMediatr.CQRS.Results.CategoryResults;
 using OnionVb02.Contract.RepositoryInterfaces;
 using OnionVb02.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnionVb02.Application.CqrsAndMediatr.CQRS.Handlers.Read
 {
-    public class GetCategoryQueryHandler
+    public class GetCategoryQueryHandler : IQueryHandler<GetAllCategoriesQuery, List<GetCategoryQueryResult>>
     {
         private readonly ICategoryRepository _repository;
 
@@ -18,17 +16,27 @@ namespace OnionVb02.Application.CqrsAndMediatr.CQRS.Handlers.Read
             _repository = repository;
         }
 
-        //Todo : Mapper profiles icin ödev
-        public async Task<List<GetCategoryQueryResult>> Handle()
+        public async Task<Result<List<GetCategoryQueryResult>>> Handle(
+            GetAllCategoriesQuery request,
+            CancellationToken cancellationToken)
         {
-            List<Category> values = await _repository.GetAllAsync();
-
-            return values.Select(x => new GetCategoryQueryResult
+            try
             {
-                CategoryName = x.CategoryName,
-                Description = x.Description,
-                Id = x.Id
-            }).ToList();
+                List<Category> values = await _repository.GetAllAsync();
+
+                var result = values.Select(x => new GetCategoryQueryResult
+                {
+                    Id = x.Id,
+                    CategoryName = x.CategoryName,
+                    Description = x.Description
+                }).ToList();
+
+                return Result<List<GetCategoryQueryResult>>.Success(result, "Kategoriler başarıyla getirildi");
+            }
+            catch (Exception ex)
+            {
+                return Result<List<GetCategoryQueryResult>>.Failure("Kategoriler getirilirken hata oluştu", ex.Message);
+            }
         }
     }
 }

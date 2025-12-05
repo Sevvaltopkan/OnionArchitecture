@@ -13,12 +13,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnionVb02.Domain", "Core\On
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnionVb02.Contract", "Core\OnionVb02.Contract\OnionVb02.Contract.csproj", "{6C345FD9-35CD-45D5-8FFD-46F1C86B1D4B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EC462FD-D22E-90A8-E5CE-7E832BA40C5D}"
-	ProjectSection(SolutionItems) = preProject
-		Odevler.txt = Odevler.txt
-		OnemliNotlar.txt = OnemliNotlar.txt
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnionVb02.Application", "Core\OnionVb02.Application\OnionVb02.Application.csproj", "{130906F1-5663-4777-99A3-7566794111CD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnionVb02.InnerInfrastructure", "Infrastructure\OnionVb02.InnerInfrastructure\OnionVb02.InnerInfrastructure.csproj", "{24C2A045-E237-411C-A24E-8A7BF5F17BAA}"
@@ -26,6 +20,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnionVb02.Persistence", "Infrastructure\OnionVb02.Persistence\OnionVb02.Persistence.csproj", "{EFFF57D9-AB97-49BD-AFBD-D30B10F1097C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnionVb02.WebApi", "Presentation\OnionVb02.WebApi\OnionVb02.WebApi.csproj", "{B6A5EA83-C1D7-484D-826F-0916CE2FC06E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OnionVb02.ValidatorStructor", "Infrastructure\OnionVb02.ValidatorStructor\OnionVb02.ValidatorStructor.csproj", "{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,6 +53,10 @@ Global
 		{B6A5EA83-C1D7-484D-826F-0916CE2FC06E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B6A5EA83-C1D7-484D-826F-0916CE2FC06E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B6A5EA83-C1D7-484D-826F-0916CE2FC06E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -67,6 +67,7 @@ Global
 		{130906F1-5663-4777-99A3-7566794111CD} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{24C2A045-E237-411C-A24E-8A7BF5F17BAA} = {9D810D07-A831-4812-B801-5C7A45D965C3}
 		{EFFF57D9-AB97-49BD-AFBD-D30B10F1097C} = {9D810D07-A831-4812-B801-5C7A45D965C3}
+		{A1B2C3D4-E5F6-7890-ABCD-EF1234567890} = {9D810D07-A831-4812-B801-5C7A45D965C3}
 		{B6A5EA83-C1D7-484D-826F-0916CE2FC06E} = {6FF44F75-C8C6-427F-B7C3-488864A469C9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

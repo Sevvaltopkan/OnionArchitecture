@@ -1,15 +1,12 @@
-﻿using OnionVb02.Application.CqrsAndMediatr.CQRS.Commands.CategoryCommands;
+﻿using MediatR;
+using OnionVb02.Application.CqrsAndMediatr.Common;
+using OnionVb02.Application.CqrsAndMediatr.CQRS.Commands.CategoryCommands;
 using OnionVb02.Contract.RepositoryInterfaces;
 using OnionVb02.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnionVb02.Application.CqrsAndMediatr.CQRS.Handlers.Modify
 {
-    public class RemoveCategoryCommandHandler
+    public class RemoveCategoryCommandHandler : ICommandHandler<RemoveCategoryCommand>
     {
         private readonly ICategoryRepository _repository;
 
@@ -18,10 +15,22 @@ namespace OnionVb02.Application.CqrsAndMediatr.CQRS.Handlers.Modify
             _repository = repository;
         }
 
-        public async Task Handle(RemoveCategoryCommand command)
+        public async Task<Result> Handle(RemoveCategoryCommand command, CancellationToken cancellationToken)
         {
-            Category value = await _repository.GetByIdAsync(command.Id);
-            await _repository.DeleteAsync(value);
+            try
+            {
+                Category value = await _repository.GetByIdAsync(command.Id);
+                
+                if (value == null)
+                    return Result.Failure($"ID: {command.Id} bulunamadı");
+
+                await _repository.DeleteAsync(value);
+                return Result.Success("Category başarıyla silindi");
+            }
+            catch (Exception ex)
+            {
+                return Result.Failure("Category silinirken hata oluştu", ex.Message);
+            }
         }
     }
 }

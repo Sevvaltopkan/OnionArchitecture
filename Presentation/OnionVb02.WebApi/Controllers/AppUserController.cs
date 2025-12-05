@@ -1,10 +1,9 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using OnionVb02.Application.CqrsAndMediatr.Common;
 using OnionVb02.Application.CqrsAndMediatr.Mediator.Commands.AppUserCommands;
 using OnionVb02.Application.CqrsAndMediatr.Mediator.Queries.AppUserQueries;
 using OnionVb02.Application.CqrsAndMediatr.Mediator.Results.AppUserResults;
-using OnionVb02.Domain.Entities;
 
 namespace OnionVb02.WebApi.Controllers
 {
@@ -20,38 +19,58 @@ namespace OnionVb02.WebApi.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> AppUserList()
+        public async Task<IActionResult> GetAllUsers()
         {
-            List<GetAppUserQueryResult> appUsers = await _mediator.Send(new GetAppUserQuery());
-            return Ok(appUsers);
+            var result = await _mediator.Send(new GetAppUserQuery());
+            
+            if (result.IsFailure)
+                return BadRequest(result);
+            
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetAppUser(int id)
+        public async Task<IActionResult> GetUserById(int id)
         {
-            GetAppUserByIdQueryResult value = await _mediator.Send(new GetAppUserByIdQuery(id));
-            return Ok(value);
+            var result = await _mediator.Send(new GetAppUserByIdQuery(id));
+            
+            if (result.IsFailure)
+                return NotFound(result);
+            
+            return Ok(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAppUser(CreateAppUserCommand command)
+        public async Task<IActionResult> CreateUser(CreateAppUserCommand command)
         {
-            await _mediator.Send(command);
-            return Ok("Veri eklendi");
+            var result = await _mediator.Send(command);
+            
+            if (result.IsFailure)
+                return BadRequest(result);
+            
+            return CreatedAtAction(nameof(GetUserById), new { id = result.Data.Id }, result);
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateAppUser(UpdateAppUserCommand command)
+        public async Task<IActionResult> UpdateUser(UpdateAppUserCommand command)
         {
-            await _mediator.Send(command);
-            return Ok("Veri güncellendi");
+            var result = await _mediator.Send(command);
+            
+            if (result.IsFailure)
+                return BadRequest(result);
+            
+            return Ok(result);
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> DeleteAppUser(int id)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteUser(int id)
         {
-            await _mediator.Send(new RemoveAppUserCommand(id));
-            return Ok("Veri Silindi");
+            var result = await _mediator.Send(new RemoveAppUserCommand(id));
+            
+            if (result.IsFailure)
+                return BadRequest(result);
+            
+            return Ok(result);
         }
     }
 }

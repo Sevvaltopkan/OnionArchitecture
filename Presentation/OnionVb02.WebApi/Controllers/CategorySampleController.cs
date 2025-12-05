@@ -1,10 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using OnionVb02.Application.CqrsAndMediatr.CQRS.Commands.CategoryCommands;
-using OnionVb02.Application.CqrsAndMediatr.CQRS.Handlers.Modify;
-using OnionVb02.Application.CqrsAndMediatr.CQRS.Handlers.Read;
 using OnionVb02.Application.CqrsAndMediatr.CQRS.Queries.CategoryQueries;
-using OnionVb02.Application.CqrsAndMediatr.CQRS.Results.CategoryResults;
 
 namespace OnionVb02.WebApi.Controllers
 {
@@ -12,54 +9,66 @@ namespace OnionVb02.WebApi.Controllers
     [ApiController]
     public class CategorySampleController : ControllerBase
     {
-        private readonly GetCategoryQueryHandler _getCategoryQueryHandler;
-        private readonly GetCategoryByIdQueryHandler _getCategoryByIdQueryHandler;
-        private readonly CreateCategoryCommandHandler _createCategoryCommandHandler;
-        private readonly UpdateCategoryCommandHandler _updateCategoryCommandHandler;
-        private readonly RemoveCategoryCommandHandler _removeCategoryCommandHandler;
+        private readonly IMediator _mediator;
 
-        public CategorySampleController(GetCategoryQueryHandler getCategoryQueryHandler, GetCategoryByIdQueryHandler getCategoryByIdQueryHandler, CreateCategoryCommandHandler createCategoryCommandHandler, UpdateCategoryCommandHandler updateCategoryCommandHandler, RemoveCategoryCommandHandler removeCategoryCommandHandler)
+        public CategorySampleController(IMediator mediator)
         {
-            _getCategoryQueryHandler = getCategoryQueryHandler;
-            _getCategoryByIdQueryHandler = getCategoryByIdQueryHandler;
-            _createCategoryCommandHandler = createCategoryCommandHandler;
-            _updateCategoryCommandHandler = updateCategoryCommandHandler;
-            _removeCategoryCommandHandler = removeCategoryCommandHandler;
+            _mediator = mediator;
         }
 
         [HttpGet]
         public async Task<IActionResult> CategoryList()
         {
-            List<GetCategoryQueryResult> values = await _getCategoryQueryHandler.Handle();
-            return Ok(values);
+            var result = await _mediator.Send(new GetAllCategoriesQuery());
+            
+            if (result.IsFailure)
+                return BadRequest(result);
+            
+            return Ok(result);
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCategory(int id)
         {
-            GetCategoryByIdQueryResult value = await _getCategoryByIdQueryHandler.Handle(new GetCategoryByIdQuery(id));
-            return Ok(value);
+            var result = await _mediator.Send(new GetCategoryByIdQuery(id));
+            
+            if (result.IsFailure)
+                return NotFound(result);
+            
+            return Ok(result);
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateCategory(CreateCategoryCommand command)
         {
-            await _createCategoryCommandHandler.Handle(command);
-            return Ok("Ekleme işlemi basarılı");
+            var result = await _mediator.Send(command);
+            
+            if (result.IsFailure)
+                return BadRequest(result);
+            
+            return Ok(result);
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateCategory(UpdateCategoryCommand command)
         {
-            await _updateCategoryCommandHandler.Handle(command);
-            return Ok("Güncelleme işlemi basarılı");
+            var result = await _mediator.Send(command);
+            
+            if (result.IsFailure)
+                return BadRequest(result);
+            
+            return Ok(result);
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> RemoveCategory( int id)
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> RemoveCategory(int id)
         {
-            await _removeCategoryCommandHandler.Handle(new RemoveCategoryCommand(id));
-            return Ok("Silme işlemi basarılı");
+            var result = await _mediator.Send(new RemoveCategoryCommand(id));
+            
+            if (result.IsFailure)
+                return BadRequest(result);
+            
+            return Ok(result);
         }
     }
 }

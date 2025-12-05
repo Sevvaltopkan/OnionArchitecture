@@ -1,15 +1,13 @@
-﻿using OnionVb02.Application.CqrsAndMediatr.CQRS.Commands.CategoryCommands;
+﻿using MediatR;
+using OnionVb02.Application.CqrsAndMediatr.Common;
+using OnionVb02.Application.CqrsAndMediatr.CQRS.Commands.CategoryCommands;
+using OnionVb02.Application.CqrsAndMediatr.CQRS.Results.CategoryResults;
 using OnionVb02.Contract.RepositoryInterfaces;
 using OnionVb02.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace OnionVb02.Application.CqrsAndMediatr.CQRS.Handlers.Modify
 {
-    public class CreateCategoryCommandHandler
+    public class CreateCategoryCommandHandler : ICommandHandler<CreateCategoryCommand, GetCategoryByIdQueryResult>
     {
         private readonly ICategoryRepository _repository;
 
@@ -17,16 +15,36 @@ namespace OnionVb02.Application.CqrsAndMediatr.CQRS.Handlers.Modify
         {
             _repository = repository;
         }
-        
-        public async Task Handle(CreateCategoryCommand command)
+
+        public async Task<Result<GetCategoryByIdQueryResult>> Handle(
+            CreateCategoryCommand command,
+            CancellationToken cancellationToken)
         {
-            await _repository.CreateAsync(new Category
+            try
             {
-                CategoryName = command.CategoryName,
-                CreatedDate = DateTime.Now,
-                Status = Domain.Enums.DataStatus.Inserted,
-                Description = command.Description
-            });
+                var entity = new Category
+                {
+                    CategoryName = command.CategoryName,
+                    Description = command.Description,
+                    CreatedDate = DateTime.Now,
+                    Status = Domain.Enums.DataStatus.Inserted
+                };
+
+                await _repository.CreateAsync(entity);
+
+                var dto = new GetCategoryByIdQueryResult
+                {
+                    Id = entity.Id,
+                    CategoryName = entity.CategoryName,
+                    Description = entity.Description
+                };
+
+                return Result<GetCategoryByIdQueryResult>.Success(dto, "Category başarıyla oluşturuldu");
+            }
+            catch (Exception ex)
+            {
+                return Result<GetCategoryByIdQueryResult>.Failure("Category oluşturulurken hata oluştu", ex.Message);
+            }
         }
     }
 }

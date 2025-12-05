@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OnionVb02.Domain.Entities
+﻿namespace OnionVb02.Domain.Entities
 {
     public class Product : BaseEntity
     {
@@ -12,10 +6,7 @@ namespace OnionVb02.Domain.Entities
         public decimal UnitPrice { get; set; }
         public int? CategoryId { get; set; }
 
-
-        //Relational Properties
         public virtual Category Category { get; set; }
         public virtual ICollection<OrderDetail> OrderDetails { get; set; }
-
     }
 }
