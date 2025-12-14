@@ -1,0 +1,78 @@
+<div class="container">
+  <h1>Kategori Yönetimi</h1>
+
+  <!-- Mesaj -->
+  <div *ngIf="message" class="alert" [class.alert-success]="messageType === 'success'" [class.alert-error]="messageType === 'error'">
+    {{ message }}
+  </div>
+
+  <!-- Yeni Kategori Ekleme Formu -->
+  <div class="add-form">
+    <h2>Yeni Kategori Ekle</h2>
+    <div class="form-row">
+      <input 
+        type="text" 
+        [(ngModel)]="newCategory.categoryName" 
+        placeholder="Kategori Adı *"
+        [disabled]="saving"
+      />
+      <input 
+        type="text" 
+        [(ngModel)]="newCategory.description" 
+        placeholder="Açıklama"
+        [disabled]="saving"
+      />
+      <button (click)="addCategory()" [disabled]="saving" class="btn-add">
+        {{ saving ? 'Ekleniyor...' : 'Ekle' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- Kategori Listesi -->
+  <div class="list-section">
+    <h2>Kategoriler</h2>
+    
+    <div *ngIf="loading" class="loading">Yükleniyor...</div>
+
+    <div *ngIf="!loading && categories.length === 0" class="empty">
+      Henüz kategori bulunmuyor.
+    </div>
+
+    <table *ngIf="!loading && categories.length > 0">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Kategori Adı</th>
+          <th>Açıklama</th>
+          <th>İşlemler</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cat of categories">
+          <td>{{ cat.id }}</td>
+          
+          <!-- Normal görünüm -->
+          <ng-container *ngIf="editingId !== cat.id">
+            <td>{{ cat.categoryName }}</td>
+            <td>{{ cat.description || '-' }}</td>
+            <td>
+              <button (click)="startEdit(cat)" class="btn-edit">Düzenle</button>
+              <button (click)="deleteCategory(cat.id, cat.categoryName)" class="btn-delete">Sil</button>
+            </td>
+          </ng-container>
+
+          <!-- Düzenleme modu -->
+          <ng-container *ngIf="editingId === cat.id">
+            <td><input type="text" [(ngModel)]="editCategory.categoryName" /></td>
+            <td><input type="text" [(ngModel)]="editCategory.description" /></td>
+            <td>
+              <button (click)="saveEdit(cat.id)" class="btn-save">Kaydet</button>
+              <button (click)="cancelEdit()" class="btn-cancel">İptal</button>
+            </td>
+          </ng-container>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+

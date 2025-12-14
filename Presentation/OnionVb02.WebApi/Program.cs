@@ -10,6 +10,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// CORS Policy - Angular Frontend bağlantısı için
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngular", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 builder.Services.AddDbContextService();
 builder.Services.AddDtoMapperService();
 builder.Services.AddManagerService();
@@ -25,6 +36,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// CORS Middleware
+app.UseCors("AllowAngular");
 
 app.UseAuthorization();
 app.MapControllers();

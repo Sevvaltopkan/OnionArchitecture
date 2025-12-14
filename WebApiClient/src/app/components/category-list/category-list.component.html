@@ -1,0 +1,41 @@
+<div class="container">
+  <div class="page-header">
+    <h1>Kategoriler</h1>
+    <a routerLink="/categories/create" class="btn btn-success">Yeni Kategori</a>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    Yükleniyor...
+  </div>
+
+  <div *ngIf="error" class="alert alert-danger">
+    {{ error }}
+    <button (click)="loadCategories()" class="btn btn-sm">Tekrar Dene</button>
+  </div>
+
+  <div *ngIf="!loading && !error && categories.length === 0" class="alert alert-info">
+    Henüz kategori bulunmuyor.
+  </div>
+
+  <table *ngIf="!loading && !error && categories.length > 0" class="table">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Kategori Adı</th>
+        <th>Açıklama</th>
+        <th>İşlemler</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let category of categories">
+        <td>{{ category.id }}</td>
+        <td>{{ category.categoryName }}</td>
+        <td>{{ category.description || '-' }}</td>
+        <td>
+          <a [routerLink]="['/categories/edit', category.id]" class="btn btn-sm btn-primary">Düzenle</a>
+          <button (click)="deleteCategory(category.id, category.categoryName)" class="btn btn-sm btn-danger">Sil</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

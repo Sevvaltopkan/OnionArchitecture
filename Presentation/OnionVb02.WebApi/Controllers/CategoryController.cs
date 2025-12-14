@@ -44,6 +44,20 @@ namespace OnionVb02.WebApi.Controllers
             return Ok("Veri eklendi");
         }
 
+        [HttpPut]
+        public async Task<IActionResult> UpdateCategory(UpdateCategoryRequestModel model)
+        {
+            CategoryDto category = _mapper.Map<CategoryDto>(model);
+            await _categoryManager.UpdateAsync(category);
+            return Ok("Veri güncellendi");
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCategory(int id)
+        {
+            string result = await _categoryManager.SoftDeleteAsync(id);
+            return Ok(result);
+        }
 
     }
 }
